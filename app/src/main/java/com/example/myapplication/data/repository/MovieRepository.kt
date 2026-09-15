@@ -7,19 +7,17 @@ import com.example.myapplication.data.remote.dto.MovieResponseDto
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import com.example.myapplication.BuildConfig
 
 class MovieRepository {
 
-    private val apiKey = "387c26478e8888901084cfe1756a1974"
+    private val apiKey = BuildConfig.TMDB_API_KEY
 
-    suspend fun getPopularMovies(): MovieResponse {
-        val responseDto: MovieResponseDto = KtorClient.httpClient
+    suspend fun getPopularMovies(): Result<MovieResponse> = runCatching {
+        KtorClient.httpClient
             .get("https://api.themoviedb.org/3/movie/popular") {
                 parameter("api_key", apiKey)
                 parameter("language", "es-ES")
-            }
-            .body()
-
-        return responseDto.toMovieResponse()
-    }
+            }.body<MovieResponseDto>()
+    }.map { it.toMovieResponse() }
 }
