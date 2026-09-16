@@ -12,11 +12,13 @@ import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
 
-class MovieListViewModel : ViewModel() {
-
-    private val repository = MovieRepository()
-
+@HiltViewModel
+class MovieListViewModel @Inject constructor(
+    private val repository: MovieRepository
+): ViewModel() {
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())
     val movies: StateFlow<List<Movie>> = _movies.asStateFlow()
 
